@@ -51,12 +51,40 @@
 
     		//Make Api request
     		fetch(`http://api.zippopotam.us/us/${zip}`)
-    		.then(response => response.json())
+    		.then(response => {
+    			if(response.status != 200){
+    				showIcon('remove');
+    				document.querySelector('#output').innerHTML = 
+    				`
+    				<article class="message message-body is-danger">
+    				<div class="message-body">Invalid Zipcode, please try again.</div>
+    				</article>
+    				`;
+    				throw Error(response.statusText);
+    			} else{
+    				showIcon('check');
+    				return response.json();
+    			}
+    		})
     		.then(data => {
     			console.log(data);
     		})
+    		.catch(err => console.log(err));
     		
     		e.preventDefault();
+    	}
+
+    	function showIcon(icon){
+    		// Clear Icons
+    		document.querySelector('.icon-remove')
+    		.style.display = 'none';
+
+    		document.querySelector('.icon-check')
+    		.style.display = 'none';
+
+    		// Show Correct Icon
+    		document.querySelector(`.icon-${icon}`).style.display = 'inline-flex';
+
     	}
     </script>
 </body>
